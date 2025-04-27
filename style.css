@@ -157,3 +157,21 @@ button:hover {
     background-color: #0056b3;
 }
 
+
+/*searchbar*/
+#keyword-input {
+  width: 200px;
+  height: 40px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+#keyword-input:focus {
+  border-color: #1c9cd8;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.4);
+}
