@@ -6,6 +6,7 @@ let currentFilters = {
   maxHeight: 100,
   maxLifeSpan: 50,
   weightCategory: "all",
+  keyword: "",
 };
 
 function getAverageWeight(weightMetric) {
@@ -80,11 +81,14 @@ function applyFilters() {
       weightOk = avgWeight >= 5;
     }
 
-    return heightOk && lifeSpanOk && weightOk;
-  })
+    const keywordOk = currentFilters.keyword === "" || breed.name.toLowerCase().includes(currentFilters.keyword);
+
+    return heightOk && lifeSpanOk && weightOk && keywordOk; 
+  });
 
   renderBreeds(filtered);
 }
+
 
 const sortSelect = document.createElement("select");
 sortSelect.classList.add("sort-select");
@@ -152,4 +156,11 @@ weightButtons[0].addEventListener("click", () => {
 weightButtons[1].addEventListener("click", () => {
   currentFilters.weightCategory = "over5";
   applyFilters();
+});
+
+//SEARCHING element adding and eventlistener to him
+const keywordInput = document.querySelector('#keyword-input');
+keywordInput.addEventListener('input', () => {
+  currentFilters.keyword = keywordInput.value.toLowerCase();
+  applyFilters(); 
 });
