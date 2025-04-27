@@ -1,4 +1,4 @@
-import { breeds } from './data_sample.js';
+import { breeds } from './data_full.js';
 const list = document.querySelector("ul#breeds.cards");
 
 //array for saving current filers
