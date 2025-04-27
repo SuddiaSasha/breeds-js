@@ -1,6 +1,13 @@
 import { breeds } from './data_sample.js';
 const list = document.querySelector("ul#breeds.cards");
 
+//array for saving current filers
+let currentFilters = {
+  maxHeight: 100,
+  maxLifeSpan: 50,
+  weightCategory: "all",
+};
+
 function getAverageWeight(weightMetric) {
   if (!weightMetric) return 0;
   const parts = weightMetric.split(' - ');
@@ -55,6 +62,30 @@ function renderBreeds(breedsArray) {
   }
 }
 
+
+//function for applying filters
+function applyFilters() {
+  let filtered = breeds.filter(breed => {
+    const avgHeight = getAverageHeight(breed.height?.metric);
+    const avgLifeSpan = parseLifeSpan(breed.life_span);
+    const avgWeight = getAverageWeight(breed.weight?.metric);
+
+    const heightOk = avgHeight <= currentFilters.maxHeight;
+    const lifeSpanOk = avgLifeSpan <= currentFilters.maxLifeSpan;
+    let weightOk = true;
+
+    if (currentFilters.weightCategory === "under5"){
+      weightOk = avgWeight < 5;
+    } else if (currentFilters.weightCategory === "over5"){
+      weightOk = avgWeight >= 5;
+    }
+
+    return heightOk && lifeSpanOk && weightOk;
+  })
+
+  renderBreeds(filtered);
+}
+
 const sortSelect = document.createElement("select");
 sortSelect.classList.add("sort-select");
 sortSelect.style.width = "200px";
@@ -75,7 +106,7 @@ sortSelect.addEventListener("change", (event) => {
   }
   const sortedBreeds = [...breeds].sort((a, b) => {
     if (sortBy === "weight") {
-      return getAverageWeight(a.weight.metric) - getAverageWeight(b.weight.metric); 
+      return getAverageWeight(a.weight.metric) - getAverageWeight(b.weight.metric);
     } else if (sortBy === "height") {
       return getAverageHeight(a.height.metric) - getAverageHeight(b.height.metric);
     } else if (sortBy === "life_span") {
@@ -91,25 +122,34 @@ sortSelect.addEventListener("change", (event) => {
 const sortRangeHeight = document.getElementById("input-height");
 const heightValueSpan = document.getElementById("height-value");
 
+//HEIGHT refresh event listeners for inputs 
 sortRangeHeight.addEventListener("input", (event) => {
   const rangeValue = Number(event.target.value);
   heightValueSpan.textContent = `${rangeValue} cm`;
-  const filteredBreeds = breeds.filter((breed) => {
-    const avgHeight = getAverageHeight(breed.height?.metric);
-    return avgHeight <= rangeValue;
-  });
-  renderBreeds(filteredBreeds);
+  currentFilters.maxHeight = rangeValue;
+  applyFilters();
 });
 
 const sortRangeLifeSpan = document.getElementById("input-life-span");
 const lifeSpanValueSpan = document.getElementById("life-span-value");
 
+//LIFE SPAN refresh even listener for input
 sortRangeLifeSpan.addEventListener("input", (event) => {
   const rangeValue = Number(event.target.value);
   lifeSpanValueSpan.textContent = `${rangeValue} years`;
-  const filteredBreeds = breeds.filter((breed) => {
-    const avgLifeSpan = parseLifeSpan(breed.life_span);
-    return avgLifeSpan <= rangeValue;
-  });
-  renderBreeds(filteredBreeds);
+  currentFilters.maxLifeSpan = rangeValue;
+  applyFilters();
+});
+
+// Додаємо слухачі для кнопок ваги
+const weightButtons = document.querySelectorAll(".sidebarBottons button");
+
+weightButtons[0].addEventListener("click", () => {
+  currentFilters.weightCategory = "under5";
+  applyFilters();
+});
+
+weightButtons[1].addEventListener("click", () => {
+  currentFilters.weightCategory = "over5";
+  applyFilters();
 });
