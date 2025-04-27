@@ -145,7 +145,7 @@ sortRangeLifeSpan.addEventListener("input", (event) => {
   applyFilters();
 });
 
-// Додаємо слухачі для кнопок ваги
+//BUTTIONS EVENTLISTENERS adding eventlisteners for buttons
 const weightButtons = document.querySelectorAll(".sidebarBottons button");
 
 weightButtons[0].addEventListener("click", () => {
